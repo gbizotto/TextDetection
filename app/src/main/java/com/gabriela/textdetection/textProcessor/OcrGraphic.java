@@ -57,21 +57,29 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
     /**
      * Checks whether a point is within the bounding box of this graphic.
      * The provided point should be relative to this graphic's containing overlay.
+     *
      * @param x An x parameter in the relative context of the canvas.
      * @param y A y parameter in the relative context of the canvas.
      * @return True if the provided point is contained within this graphic's bounding box.
      */
     public boolean contains(float x, float y) {
+        RectF rect = getRectF();
+        return rect != null && (rect.left < x && rect.right > x && rect.top < y && rect.bottom > y);
+    }
+
+    private RectF getRectF() {
         TextBlock text = mText;
         if (text == null) {
-            return false;
+            return null;
         }
+
         RectF rect = new RectF(text.getBoundingBox());
         rect.left = translateX(rect.left);
         rect.top = translateY(rect.top);
         rect.right = translateX(rect.right);
         rect.bottom = translateY(rect.bottom);
-        return (rect.left < x && rect.right > x && rect.top < y && rect.bottom > y);
+
+        return rect;
     }
 
     /**
@@ -79,25 +87,20 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
      */
     @Override
     public void draw(Canvas canvas) {
-        TextBlock text = mText;
-        if (text == null) {
+        // Draws the bounding box around the TextBlock.
+        RectF rect = getRectF();
+        if (rect == null) {
             return;
         }
-
         // Draws the bounding box around the TextBlock.
-        RectF rect = new RectF(text.getBoundingBox());
-        rect.left = translateX(rect.left);
-        rect.top = translateY(rect.top);
-        rect.right = translateX(rect.right);
-        rect.bottom = translateY(rect.bottom);
         canvas.drawRect(rect, sRectPaint);
 
         // Break the text into multiple lines and draw each one according to its own bounding box.
-        List<? extends Text> textComponents = text.getComponents();
-        for(Text currentText : textComponents) {
-            float left = translateX(currentText.getBoundingBox().left);
-            float bottom = translateY(currentText.getBoundingBox().bottom);
-            canvas.drawText(currentText.getValue(), left, bottom, sTextPaint);
-        }
+//        List<? extends Text> textComponents = text.getComponents();
+//        for (Text currentText : textComponents) {
+//            float left = translateX(currentText.getBoundingBox().left);
+//            float bottom = translateY(currentText.getBoundingBox().bottom);
+//            canvas.drawText(currentText.getValue(), left, bottom, sTextPaint);
+//        }
     }
 }

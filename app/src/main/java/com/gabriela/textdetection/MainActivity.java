@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -22,7 +24,6 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity {
 
-    // Use a compound button so either checkbox or switch widgets work.
     @BindView(R.id.auto_focus)
     CompoundButton autoFocus;
     @BindView(R.id.use_flash)
@@ -30,11 +31,10 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.status_message)
     TextView statusMessage;
     @BindView(R.id.text_value)
-     TextView textValue;
+    TextView textValue;
 
     private static final int RC_OCR_CAPTURE = 9003;
     private static final String TAG = "MainActivity";
-    //https://developers.google.com/vision/text-overview
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +69,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == RC_OCR_CAPTURE) {
+        if (requestCode == RC_OCR_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
-                    String text = data.getStringExtra(OcrCaptureActivity.TEXTBLOCKOBJECT);
+                    String text = data.getStringExtra(OcrCaptureActivity.CPF);
+                    Date birthDate = (Date) data.getSerializableExtra(OcrCaptureActivity.BIRTH_DATE);
+                    String name = data.getStringExtra(OcrCaptureActivity.NAME);
                     statusMessage.setText(R.string.ocr_success);
-                    textValue.setText(text);
+                    textValue.setText("nome = "+ name + ", CPF = "+ text + ", data de nascimento = " + birthDate);
                     Log.d(TAG, "Text read: " + text);
                 } else {
                     statusMessage.setText(R.string.ocr_failure);
@@ -84,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 statusMessage.setText(String.format(getString(R.string.ocr_error),
                         CommonStatusCodes.getStatusCodeString(resultCode)));
             }
-        }
-        else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

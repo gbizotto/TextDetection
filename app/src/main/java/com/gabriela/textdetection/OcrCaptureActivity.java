@@ -1,7 +1,6 @@
 package com.gabriela.textdetection;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +20,7 @@ import android.widget.Toast;
 import com.gabriela.textdetection.camera.CameraSource;
 import com.gabriela.textdetection.camera.CameraSourcePreview;
 import com.gabriela.textdetection.camera.GraphicOverlay;
+import com.gabriela.textdetection.textProcessor.DataFoundCallback;
 import com.gabriela.textdetection.textProcessor.OcrDetectorProcessor;
 import com.gabriela.textdetection.textProcessor.OcrGraphic;
 import com.google.android.gms.common.ConnectionResult;
@@ -30,11 +30,13 @@ import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import java.io.IOException;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class OcrCaptureActivity extends AppCompatActivity {
+@SuppressWarnings("deprecation")
+public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCallback {
 
     private static final String TAG = "OcrCaptureActivity";
 
@@ -44,7 +46,9 @@ public class OcrCaptureActivity extends AppCompatActivity {
     // Constants used to pass extra data in the intent
     public static final String AUTOFOCUS = "AutoFocus";
     public static final String USEFLASH = "UseFlash";
-    public static final String TEXTBLOCKOBJECT = "String";
+    public static final String CPF = "CPF";
+    public static final String NAME = "NAME";
+    public static final String BIRTH_DATE = "BIRTH_DATE";
 
     private CameraSource mCameraSource;
     @BindView(R.id.preview)
@@ -98,22 +102,10 @@ public class OcrCaptureActivity extends AppCompatActivity {
         // is set to receive the text recognition results and display graphics for each text block
         // on screen.
         TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
-        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay));
+        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay, this));
 
         if (!textRecognizer.isOperational()) {
-            // Note: The first time that an app using a Vision API is installed on a
-            // device, GMS will download a native libraries to the device in order to do detection.
-            // Usually this completes before the app is run for the first time.  But if that
-            // download has not yet completed, then the above call will not detect any text,
-            // barcodes, or faces.
-            //
-            // isOperational() can be used to check if the required native libraries are currently
-            // available.  The detectors will automatically become operational once the library
-            // downloads complete on device.
             Log.w(TAG, "Detector dependencies are not yet available.");
-
-            // Check for low storage.  If there is low storage, the native library will not be
-            // downloaded, so detection will not become operational.
             IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
             boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
 
@@ -208,18 +200,26 @@ public class OcrCaptureActivity extends AppCompatActivity {
             text = graphic.getTextBlock();
             if (text != null && text.getValue() != null) {
                 Intent data = new Intent();
-                data.putExtra(TEXTBLOCKOBJECT, text.getValue());
+                data.putExtra(CPF, text.getValue());
                 setResult(CommonStatusCodes.SUCCESS, data);
                 finish();
-            }
-            else {
+            } else {
                 Log.d(TAG, "text data is null");
             }
-        }
-        else {
-            Log.d(TAG,"no text detected");
+        } else {
+            Log.d(TAG, "no text detected");
         }
         return text != null;
+    }
+
+    @Override
+    public void dataFound(String cpf, Date birthDate, String name) {
+        Intent data = new Intent();
+        data.putExtra(CPF, cpf);
+        data.putExtra(BIRTH_DATE, birthDate);
+        data.putExtra(NAME, name);
+        setResult(CommonStatusCodes.SUCCESS, data);
+        finish();
     }
 
     private class CaptureGestureListener extends GestureDetector.SimpleOnGestureListener {
