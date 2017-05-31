@@ -9,8 +9,6 @@ import com.gabriela.textdetection.utils.TextIdentifierUtils;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.TextBlock;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
@@ -21,7 +19,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     private Integer mTopPointDate = null;
     private Integer mTopPointName = null;
     private Date mBirthDate = null;
-    private String mName;
+    private String mFirstPossibleName;
     private final DataFoundCallback mCallback;
 
     public OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay, DataFoundCallback callback) {
@@ -40,35 +38,47 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     public void receiveDetections(Detector.Detections<TextBlock> detections) {
         mGraphicOverlay.clear();
         SparseArray<TextBlock> items = detections.getDetectedItems();
+        boolean drawGraphic;
         for (int i = 0; i < items.size(); ++i) {
             TextBlock item = items.valueAt(i);
 
+            drawGraphic = false;
             if (item.getValue().length() >= 10) {
                 if (TextUtils.isEmpty(mCpf) && TextIdentifierUtils.isCpfValue(item)) {
                     mCpf = item.getValue();
-                }
-
-                if (TextIdentifierUtils.isDate(item)) {
+                    drawGraphic = true;
+                } else if (TextIdentifierUtils.isDate(item)) {
                     setBirthDate(item);
+                    drawGraphic = true;
+                } else {
+                    setName(item);
+                    if (!TextUtils.isEmpty(mFirstPossibleName)) {
+                        drawGraphic = true;
+                    }
                 }
 
-                setName(item);
-
-                OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item);
-                mGraphicOverlay.add(graphic);
+                if (drawGraphic) {
+                    OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item);
+                    mGraphicOverlay.add(graphic);
+                }
             }
         }
 
-        if (!TextUtils.isEmpty(mCpf) && mBirthDate != null && !TextUtils.isEmpty(mName)) {
-            mCallback.dataFound(mCpf, mBirthDate, mName);
+        Log.v(OcrDetectorProcessor.class.getSimpleName(), "mCpf = " + mCpf);
+        Log.v(OcrDetectorProcessor.class.getSimpleName(), "mBirthDate = " + mBirthDate);
+        Log.v(OcrDetectorProcessor.class.getSimpleName(), "mFirstPossibleName = " + mFirstPossibleName);
+        Log.v(OcrDetectorProcessor.class.getSimpleName(), "mTopPointName = " + mTopPointName);
+
+        if (!TextUtils.isEmpty(mCpf) && mBirthDate != null && !TextUtils.isEmpty(mFirstPossibleName)) {
+                mCallback.dataFound(mCpf, mBirthDate, mFirstPossibleName);
         }
     }
 
     private void setName(TextBlock textBlock) {
-        if (TextIdentifierUtils.isLettersOnly(textBlock.getValue())) {
-            if (mTopPointName == null || mTopPointName < textBlock.getBoundingBox().top) {
+        if (TextIdentifierUtils.mightBeName(textBlock.getValue())) {
+            if (mTopPointName == null || mTopPointName > textBlock.getBoundingBox().top) {
                 mTopPointName = textBlock.getBoundingBox().top;
-                mName = textBlock.getValue();
+                mFirstPossibleName = textBlock.getValue();
             }
         }
     }
@@ -88,30 +98,5 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     @Override
     public void release() {
         mGraphicOverlay.clear();
-    }
-
-    private String toString(TextBlock textBlock) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(textBlock.getValue())
-                .append(", ")
-                .append(textBlock.getLanguage())
-                .append(", bounding box = ")
-                .append(textBlock.getBoundingBox().top)
-                .append(",")
-                .append(textBlock.getBoundingBox().right)
-                .append(",")
-                .append(textBlock.getBoundingBox().bottom)
-                .append(",")
-                .append(textBlock.getBoundingBox().left)
-                .append(", corner points = ")
-                .append(textBlock.getCornerPoints()[0])
-                .append(",")
-                .append(textBlock.getCornerPoints()[1])
-                .append(",")
-                .append(textBlock.getCornerPoints()[2])
-                .append(",")
-                .append(textBlock.getCornerPoints()[3]);
-
-        return builder.toString();
     }
 }

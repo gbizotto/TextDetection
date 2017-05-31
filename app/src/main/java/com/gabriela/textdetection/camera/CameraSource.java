@@ -105,7 +105,6 @@ public class CameraSource {
     // these aren't used outside of the method that creates them, they still must have hard
     // references maintained to them.
     private SurfaceView mDummySurfaceView;
-    private SurfaceTexture mDummySurfaceTexture;
 
     /**
      * Dedicated thread and associated runnable for calling into the detector with frames, as the
@@ -296,7 +295,7 @@ public class CameraSource {
 
             mCamera = createCamera();
 
-            mDummySurfaceTexture = new SurfaceTexture(DUMMY_TEXTURE_NAME);
+            SurfaceTexture mDummySurfaceTexture = new SurfaceTexture(DUMMY_TEXTURE_NAME);
             mCamera.setPreviewTexture(mDummySurfaceTexture);
             mCamera.startPreview();
 

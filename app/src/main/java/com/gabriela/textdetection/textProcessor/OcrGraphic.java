@@ -6,10 +6,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 import com.gabriela.textdetection.camera.GraphicOverlay;
-import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
-
-import java.util.List;
 
 public class OcrGraphic extends GraphicOverlay.Graphic {
 
