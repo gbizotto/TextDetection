@@ -22,7 +22,7 @@ public final class TextIdentifierUtils {
         return TextUtils.isDigitsOnly(text) && text.length() == 11;
     }
 
-    public static boolean isLettersOnly(CharSequence str) {
+    private static boolean isLettersOnly(CharSequence str) {
         final int len = str.length();
         for (int cp, i = 0; i < len; i += Character.charCount(cp)) {
             cp = Character.codePointAt(str, i);

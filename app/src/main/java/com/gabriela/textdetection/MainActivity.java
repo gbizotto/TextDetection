@@ -10,7 +10,6 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gabriela.textdetection.utils.TextIdentifierUtils;
 import com.google.android.gms.common.api.CommonStatusCodes;
 
 import java.util.Date;
@@ -42,10 +41,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        Log.v(MainActivity.class.getSimpleName(), "isLettersOnly = " + TextIdentifierUtils.isLettersOnly("GABRIELA SALVADOR BIZOTTO"));
-        Log.v(MainActivity.class.getSimpleName(), "mightBeName = " + TextIdentifierUtils.mightBeName("GABRIELA SALVADOR BIZOTTO"));
-
     }
 
     @OnClick(R.id.read_text)
