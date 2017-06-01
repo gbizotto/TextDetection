@@ -46,13 +46,16 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
             if (item.getValue().length() >= 10) {
                 if (TextUtils.isEmpty(mCpf) && TextIdentifierUtils.isCpfValue(item)) {
                     mCpf = item.getValue();
+                    mCallback.cpfFound(mCpf);
                     drawGraphic = true;
                 } else if (TextIdentifierUtils.isDate(item)) {
                     setBirthDate(item);
+                    mCallback.birthDateFound(mBirthDate);
                     drawGraphic = true;
                 } else {
                     setName(item);
                     if (!TextUtils.isEmpty(mFirstPossibleName)) {
+                        mCallback.nameFound(mFirstPossibleName);
                         drawGraphic = true;
                     }
                 }
@@ -68,10 +71,6 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         Log.v(OcrDetectorProcessor.class.getSimpleName(), "mBirthDate = " + mBirthDate);
         Log.v(OcrDetectorProcessor.class.getSimpleName(), "mFirstPossibleName = " + mFirstPossibleName);
         Log.v(OcrDetectorProcessor.class.getSimpleName(), "mTopPointName = " + mTopPointName);
-
-        if (!TextUtils.isEmpty(mCpf) && mBirthDate != null && !TextUtils.isEmpty(mFirstPossibleName)) {
-                mCallback.dataFound(mCpf, mBirthDate, mFirstPossibleName);
-        }
     }
 
     private void setName(TextBlock textBlock) {

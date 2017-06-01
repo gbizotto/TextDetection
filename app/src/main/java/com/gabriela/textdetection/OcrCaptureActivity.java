@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -59,6 +60,10 @@ public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCa
     // Helper objects for detecting taps and pinches.
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
+
+    private String mCpf;
+    private String mName;
+    private Date mBirthDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,13 +218,39 @@ public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCa
     }
 
     @Override
-    public void dataFound(String cpf, Date birthDate, String name) {
-        Intent data = new Intent();
-        data.putExtra(CPF, cpf);
-        data.putExtra(BIRTH_DATE, birthDate);
-        data.putExtra(NAME, name);
-        setResult(CommonStatusCodes.SUCCESS, data);
-        finish();
+    public void cpfFound(String cpf) {
+        mCpf = cpf;
+        forwardToNext();
+    }
+
+    @Override
+    public void birthDateFound(Date birthDate) {
+        mBirthDate = birthDate;
+        forwardToNext();
+    }
+
+    @Override
+    public void nameFound(String name) {
+        mName = name;
+        forwardToNext();
+    }
+
+    private void forwardToNext() {
+        if (isAllDataFound()) {
+            Intent data = new Intent();
+            data.putExtra(CPF, mCpf);
+            data.putExtra(BIRTH_DATE, mBirthDate);
+            data.putExtra(NAME, mName);
+            setResult(CommonStatusCodes.SUCCESS, data);
+            finish();
+        }
+    }
+
+    private boolean isAllDataFound() {
+        if (!TextUtils.isEmpty(mCpf) && !TextUtils.isEmpty(mName) && mBirthDate != null) {
+            return true;
+        }
+        return false;
     }
 
     private class CaptureGestureListener extends GestureDetector.SimpleOnGestureListener {

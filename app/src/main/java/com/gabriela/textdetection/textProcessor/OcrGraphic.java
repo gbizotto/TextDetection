@@ -15,7 +15,6 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
     private static final int TEXT_COLOR = Color.WHITE;
 
     private static Paint sRectPaint;
-    private static Paint sTextPaint;
     private final TextBlock mText;
 
     OcrGraphic(GraphicOverlay overlay, TextBlock text) {
@@ -28,12 +27,6 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
             sRectPaint.setColor(TEXT_COLOR);
             sRectPaint.setStyle(Paint.Style.STROKE);
             sRectPaint.setStrokeWidth(4.0f);
-        }
-
-        if (sTextPaint == null) {
-            sTextPaint = new Paint();
-            sTextPaint.setColor(TEXT_COLOR);
-            sTextPaint.setTextSize(54.0f);
         }
         // Redraw the overlay, as this graphic has been added.
         postInvalidate();
@@ -89,15 +82,6 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         if (rect == null) {
             return;
         }
-        // Draws the bounding box around the TextBlock.
         canvas.drawRect(rect, sRectPaint);
-
-        // Break the text into multiple lines and draw each one according to its own bounding box.
-//        List<? extends Text> textComponents = text.getComponents();
-//        for (Text currentText : textComponents) {
-//            float left = translateX(currentText.getBoundingBox().left);
-//            float bottom = translateY(currentText.getBoundingBox().bottom);
-//            canvas.drawText(currentText.getValue(), left, bottom, sTextPaint);
-//        }
     }
 }

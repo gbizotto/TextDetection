@@ -33,6 +33,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-vision:10.2.6'
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.github.hotchemi:permissionsdispatcher:2.3.1'
+    compile 'br.com.concretesolutions:canarinho:1.2.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.4.0'

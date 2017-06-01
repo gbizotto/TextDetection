@@ -30,8 +30,12 @@ public class MainActivity extends AppCompatActivity {
     CompoundButton useFlash;
     @BindView(R.id.status_message)
     TextView statusMessage;
-    @BindView(R.id.text_value)
-    TextView textValue;
+    @BindView(R.id.txt_name)
+    TextView mTxtName;
+    @BindView(R.id.txt_cpf)
+    TextView mTxtCpf;
+    @BindView(R.id.txt_birth_date)
+    TextView mTxtBirthDate;
 
     private static final int RC_OCR_CAPTURE = 9003;
     private static final String TAG = "MainActivity";
@@ -72,12 +76,14 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == RC_OCR_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
-                    String text = data.getStringExtra(OcrCaptureActivity.CPF);
+                    String cpf = data.getStringExtra(OcrCaptureActivity.CPF);
                     Date birthDate = (Date) data.getSerializableExtra(OcrCaptureActivity.BIRTH_DATE);
                     String name = data.getStringExtra(OcrCaptureActivity.NAME);
                     statusMessage.setText(R.string.ocr_success);
-                    textValue.setText("nome = "+ name + ", CPF = "+ text + ", data de nascimento = " + birthDate);
-                    Log.d(TAG, "Text read: " + text);
+                    mTxtName.setText(name);
+                    mTxtCpf.setText(FormatUtils.formatCpf(cpf));
+                    mTxtBirthDate.setText(FormatUtils.formatDate(birthDate));
+
                 } else {
                     statusMessage.setText(R.string.ocr_failure);
                     Log.d(TAG, "No Text captured, intent data is null");

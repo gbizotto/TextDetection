@@ -19,10 +19,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/text_value"
+        android:id="@+id/txt_name"
         android:layout_below="@+id/status_message"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="110dp"
+        android:layout_alignEnd="@+id/status_message" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/txt_cpf"
+        android:layout_below="@+id/txt_name"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/status_message" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/txt_birth_date"
+        android:layout_below="@+id/txt_cpf"
+        android:layout_alignParentStart="true"
         android:layout_alignEnd="@+id/status_message" />
 
     <Button
@@ -38,7 +55,7 @@
         android:layout_height="wrap_content"
         android:text="@string/auto_focus"
         android:id="@+id/auto_focus"
-        android:layout_below="@+id/text_value"
+        android:layout_below="@+id/txt_name"
         android:layout_alignParentStart="true"
         android:layout_marginTop="66dp"
         android:checked="true" />
