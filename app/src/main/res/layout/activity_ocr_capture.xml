@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/topLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true">
-
 
     <com.gabriela.textdetection.camera.CameraSourcePreview
         android:id="@+id/preview"
@@ -20,4 +18,11 @@
 
     </com.gabriela.textdetection.camera.CameraSourcePreview>
 
-</LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_give_up"
+        android:layout_alignParentBottom="true"
+        android:text="@string/give_up"/>
+
+</RelativeLayout>

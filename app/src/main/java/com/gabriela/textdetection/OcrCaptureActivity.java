@@ -1,6 +1,7 @@
 package com.gabriela.textdetection;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 @SuppressWarnings("deprecation")
 public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCallback {
@@ -69,7 +71,6 @@ public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ocr_capture);
-
         ButterKnife.bind(this);
 
         // read parameters from the intent used to launch the activity.
@@ -107,7 +108,7 @@ public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCa
         // is set to receive the text recognition results and display graphics for each text block
         // on screen.
         TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
-        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay, this));
+        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay, this, this));
 
         if (!textRecognizer.isOperational()) {
             Log.w(TAG, "Detector dependencies are not yet available.");
@@ -217,33 +218,54 @@ public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCa
         return text != null;
     }
 
+    @OnClick(R.id.btn_give_up)
+    public void onGiveUpClick() {
+        forwardToNext();
+    }
+
     @Override
-    public void cpfFound(String cpf) {
+    public void cpfFound(String cpf, Activity activity) {
         mCpf = cpf;
-        forwardToNext();
+        showMessage(getString(R.string.cpf), activity);
+        if (isAllDataFound()) {
+            forwardToNext();
+        }
     }
 
     @Override
-    public void birthDateFound(Date birthDate) {
+    public void birthDateFound(Date birthDate, Activity activity) {
         mBirthDate = birthDate;
-        forwardToNext();
+        showMessage(getString(R.string.birth_date), activity);
+        if (isAllDataFound()) {
+            forwardToNext();
+        }
     }
 
     @Override
-    public void nameFound(String name) {
+    public void nameFound(String name, Activity activity) {
         mName = name;
-        forwardToNext();
+        showMessage(getString(R.string.name), activity);
+        if (isAllDataFound()) {
+            forwardToNext();
+        }
+    }
+
+    private void showMessage(final String dataFound, final Activity activity) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+               // Toast.makeText(activity.getBaseContext(), activity.getBaseContext().getString(R.string.data_found, dataFound), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void forwardToNext() {
-        if (isAllDataFound()) {
-            Intent data = new Intent();
-            data.putExtra(CPF, mCpf);
-            data.putExtra(BIRTH_DATE, mBirthDate);
-            data.putExtra(NAME, mName);
-            setResult(CommonStatusCodes.SUCCESS, data);
-            finish();
-        }
+        Intent data = new Intent();
+        data.putExtra(CPF, mCpf);
+        data.putExtra(BIRTH_DATE, mBirthDate);
+        data.putExtra(NAME, mName);
+        setResult(CommonStatusCodes.SUCCESS, data);
+        finish();
     }
 
     private boolean isAllDataFound() {

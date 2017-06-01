@@ -1,5 +1,6 @@
 package com.gabriela.textdetection.textProcessor;
 
+import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -16,15 +17,16 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     private final GraphicOverlay<OcrGraphic> mGraphicOverlay;
 
     private String mCpf = null;
-    private Integer mTopPointDate = null;
     private Integer mTopPointName = null;
     private Date mBirthDate = null;
     private String mFirstPossibleName;
     private final DataFoundCallback mCallback;
+    private final Activity mActivity;
 
-    public OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay, DataFoundCallback callback) {
+    public OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay, DataFoundCallback callback, Activity activity) {
         mGraphicOverlay = ocrGraphicOverlay;
         mCallback = callback;
+        mActivity = activity;
     }
 
     /**
@@ -43,19 +45,28 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
             TextBlock item = items.valueAt(i);
 
             drawGraphic = false;
+
+            Log.v(OcrDetectorProcessor.class.getSimpleName(), "tentativa de identificação = " + item.getValue());
+
             if (item.getValue().length() >= 10) {
                 if (TextUtils.isEmpty(mCpf) && TextIdentifierUtils.isCpfValue(item)) {
                     mCpf = item.getValue();
-                    mCallback.cpfFound(mCpf);
+                    mCallback.cpfFound(mCpf, mActivity);
                     drawGraphic = true;
                 } else if (TextIdentifierUtils.isDate(item)) {
                     setBirthDate(item);
-                    mCallback.birthDateFound(mBirthDate);
+                    mCallback.birthDateFound(mBirthDate, mActivity);
                     drawGraphic = true;
                 } else {
                     setName(item);
                     if (!TextUtils.isEmpty(mFirstPossibleName)) {
-                        mCallback.nameFound(mFirstPossibleName);
+                        mCallback.nameFound(mFirstPossibleName, mActivity);
+                        drawGraphic = true;
+                    }
+                    String possibleCpf = TextIdentifierUtils.getCpf(item.getValue());
+                    if (!TextUtils.isEmpty(possibleCpf)) {
+                        mCpf = possibleCpf;
+                        mCallback.cpfFound(possibleCpf, mActivity);
                         drawGraphic = true;
                     }
                 }
@@ -83,10 +94,13 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     }
 
     private void setBirthDate(TextBlock textBlock) {
+        Log.v(OcrDetectorProcessor.class.getSimpleName(), "vai testar se é data = " + textBlock.getValue());
         if (TextIdentifierUtils.isDate(textBlock)) {
-            if (mTopPointDate == null || mTopPointDate < textBlock.getBoundingBox().top) {
-                mTopPointDate = textBlock.getBoundingBox().top;
-                mBirthDate = TextIdentifierUtils.formatDate(textBlock.getValue());
+
+            Date currentDate = TextIdentifierUtils.formatDate(textBlock.getValue());
+            Log.v(OcrDetectorProcessor.class.getSimpleName(), "data testada = " + currentDate);
+            if (mBirthDate == null || mBirthDate.after(currentDate)) {
+                mBirthDate = currentDate;
             }
         }
     }
