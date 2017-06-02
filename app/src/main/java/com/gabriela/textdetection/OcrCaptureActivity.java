@@ -108,7 +108,7 @@ public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCa
         // is set to receive the text recognition results and display graphics for each text block
         // on screen.
         TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
-        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay, this, this));
+        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay, this, this, this));
 
         if (!textRecognizer.isOperational()) {
             Log.w(TAG, "Detector dependencies are not yet available.");

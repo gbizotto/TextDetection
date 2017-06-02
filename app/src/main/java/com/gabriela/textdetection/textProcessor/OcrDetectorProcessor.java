@@ -1,6 +1,7 @@
 package com.gabriela.textdetection.textProcessor;
 
 import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -22,11 +23,13 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     private String mFirstPossibleName;
     private final DataFoundCallback mCallback;
     private final Activity mActivity;
+    private final Context mContext;
 
-    public OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay, DataFoundCallback callback, Activity activity) {
+    public OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay, DataFoundCallback callback, Activity activity, Context context) {
         mGraphicOverlay = ocrGraphicOverlay;
         mCallback = callback;
         mActivity = activity;
+        mContext = context;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
             return true;
         }
 
-        if (TextIdentifierUtils.isDate(textBlock)) {
+        if (TextIdentifierUtils.isDate(textBlock.getValue(), mContext)) {
             setBirthDate(textBlock);
             mCallback.birthDateFound(mBirthDate, mActivity);
             return true;
@@ -83,7 +86,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
             foundData = true;
         }
 
-        Date possibleBirthDate = TextIdentifierUtils.getBirthDate(textBlock.getValue());
+        Date possibleBirthDate = TextIdentifierUtils.getBirthDate(textBlock.getValue(), mContext);
         if (possibleBirthDate != null && (mBirthDate == null || (mBirthDate != null && mBirthDate.after(possibleBirthDate)))) {
             mBirthDate = possibleBirthDate;
             mCallback.birthDateFound(mBirthDate, mActivity);
@@ -103,8 +106,8 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     }
 
     private void setBirthDate(TextBlock textBlock) {
-        if (TextIdentifierUtils.isDate(textBlock)) {
-            Date currentDate = TextIdentifierUtils.formatDate(textBlock.getValue());
+        if (TextIdentifierUtils.isDate(textBlock.getValue(), mContext)) {
+            Date currentDate = TextIdentifierUtils.formatDate(textBlock.getValue(), mContext);
             if (mBirthDate == null || mBirthDate.after(currentDate)) {
                 mBirthDate = currentDate;
             }

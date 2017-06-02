@@ -1,7 +1,10 @@
 package com.gabriela.textdetection.utils;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.gabriela.textdetection.R;
+import com.gabriela.textdetection.dictionary.Dictionary;
 import com.google.android.gms.vision.text.TextBlock;
 
 import java.text.ParseException;
@@ -11,8 +14,6 @@ import java.util.Date;
 import br.com.concretesolutions.canarinho.validator.Validador;
 
 public final class TextIdentifierUtils {
-
-    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     private static final String[] NOT_NAME = {"válida", "território", "nacional", "nome", "filiação", "naturalidade", "origem",
             "república", "federativa", "ministério", "cidade", "departamento", "trânsito", "carteira", "habilitação", "pública", "publica", "transito",
@@ -56,7 +57,7 @@ public final class TextIdentifierUtils {
         return cpf;
     }
 
-    public static Date getBirthDate(String text) {
+    public static Date getBirthDate(String text, Context context) {
         text = text.replaceAll(" ", "");
         String[] pieces = text.split("/");
 
@@ -71,7 +72,7 @@ public final class TextIdentifierUtils {
                         .toLowerCase());
         String month = replaceLettersLookLikeNumbers(pieces[1].toLowerCase());
         String year = replaceLettersLookLikeNumbers(pieces[2].substring(0, 4).toLowerCase());
-        return formatDate(day + "/" + month + "/" + year);
+        return formatDate(day + "/" + month + "/" + year, context);
     }
 
     private static String replaceLettersLookLikeNumbers(String text) {
@@ -91,15 +92,15 @@ public final class TextIdentifierUtils {
         return true;
     }
 
-    public static boolean isDate(TextBlock textBlock) {
-        return formatDate(textBlock.getValue()) != null;
+    public static boolean isDate(String text, Context context) {
+        return formatDate(text, context) != null;
     }
 
-    public static Date formatDate(String text) {
+    public static Date formatDate(String text, Context context) {
         text = removePossibleSeparators(text);
         Date date = null;
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+            SimpleDateFormat dateFormat = new SimpleDateFormat(context.getString(R.string.birth_date_format));
             dateFormat.setLenient(false);
             date = dateFormat.parse(text);
         } catch (ParseException e) {
@@ -108,23 +109,25 @@ public final class TextIdentifierUtils {
     }
 
     public static boolean mightBeName(String text) {
-
         text = removePossibleSeparators(text).toLowerCase();
         if (isLettersOnly(text) && text.contains(" ")) {
-            String[] words = text.split(" ");
-            for (String invalidName : NOT_NAME) {
-                if (text.contains(invalidName)) {
-                    return false;
-                }
-
-                for (String word : words) {
-                    if (invalidName.contains(word)) {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            return isAllowedName(text);
         }
         return false;
+    }
+
+    private static boolean isAllowedName(String text) {
+        String[] words = text.split(" ");
+        for (String word : words) {
+            if (Dictionary.getInstance().isInDictionary(word)) {
+                return false;
+            }
+        }
+        for (String invalidName : NOT_NAME) {
+            if (text.contains(invalidName)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

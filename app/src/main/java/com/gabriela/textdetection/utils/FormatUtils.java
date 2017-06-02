@@ -1,5 +1,9 @@
 package com.gabriela.textdetection.utils;
 
+import android.content.Context;
+
+import com.gabriela.textdetection.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,11 +17,11 @@ public final class FormatUtils {
     private FormatUtils() {
     }
 
-    public static String formatDate(Date date) {
+    public static String formatDate(Date date, Context context) {
         if (date == null) {
             return null;
         }
-        return new SimpleDateFormat("dd/MM/yyyy").format(date);
+        return new SimpleDateFormat(context.getString(R.string.birth_date_format)).format(date);
     }
 
     public static String cleanFormattting(String text){

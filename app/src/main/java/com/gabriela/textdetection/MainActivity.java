@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     statusMessage.setText(R.string.ocr_success);
                     mTxtName.setText(FormatUtils.capitalizeText(name));
                     mTxtCpf.setText(FormatUtils.formatCpf(cpf));
-                    mTxtBirthDate.setText(FormatUtils.formatDate(birthDate));
+                    mTxtBirthDate.setText(FormatUtils.formatDate(birthDate, this));
 
                 } else {
                     statusMessage.setText(R.string.ocr_failure);

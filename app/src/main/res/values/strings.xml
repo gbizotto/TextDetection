@@ -14,4 +14,6 @@
     <string name="name">Name</string>
     <string name="birth_date">Birth date</string>
     <string name="give_up">Give up automatic reading</string>
+
+    <string name="birth_date_format">dd/MM/yyyy</string>
 </resources>
