@@ -1,7 +1,5 @@
 package com.gabriela.textdetection;
 
-import android.content.Context;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

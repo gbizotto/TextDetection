@@ -269,10 +269,7 @@ public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCa
     }
 
     private boolean isAllDataFound() {
-        if (!TextUtils.isEmpty(mCpf) && !TextUtils.isEmpty(mName) && mBirthDate != null) {
-            return true;
-        }
-        return false;
+        return !TextUtils.isEmpty(mCpf) && !TextUtils.isEmpty(mName) && mBirthDate != null;
     }
 
     private class CaptureGestureListener extends GestureDetector.SimpleOnGestureListener {
