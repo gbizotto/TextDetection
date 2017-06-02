@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gabriela.textdetection.utils.FormatUtils;
 import com.google.android.gms.common.api.CommonStatusCodes;
 
 import java.util.Date;
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     Date birthDate = (Date) data.getSerializableExtra(OcrCaptureActivity.BIRTH_DATE);
                     String name = data.getStringExtra(OcrCaptureActivity.NAME);
                     statusMessage.setText(R.string.ocr_success);
-                    mTxtName.setText(name);
+                    mTxtName.setText(FormatUtils.capitalizeText(name));
                     mTxtCpf.setText(FormatUtils.formatCpf(cpf));
                     mTxtBirthDate.setText(FormatUtils.formatDate(birthDate));
 

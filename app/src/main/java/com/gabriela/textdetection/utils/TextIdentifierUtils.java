@@ -29,20 +29,12 @@ public final class TextIdentifierUtils {
 
     public static boolean isCpfValue(TextBlock textBlock) {
         String text = removePossibleSeparators(textBlock.getValue());
-        text = text
-                .replaceAll("\\.", "")
-                .replaceAll("-", "")
-                .replaceAll(" ", "");
+        text = FormatUtils.cleanFormattting(text);
         return Validador.CPF.ehValido(text);
     }
 
     public static String getCpf(String text) {
-
-        text = removePossibleSeparators(text);
-        text = text
-                .replaceAll("\\.", "")
-                .replaceAll("-", "")
-                .replaceAll(" ", "");
+        text = FormatUtils.cleanFormattting(removePossibleSeparators(text));
 
         if (isLettersOnly(text)) {
             return null;
