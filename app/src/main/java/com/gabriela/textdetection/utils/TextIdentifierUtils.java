@@ -119,15 +119,15 @@ public final class TextIdentifierUtils {
     private static boolean isAllowedName(String text) {
         String[] words = text.split(" ");
         for (String word : words) {
-            if (Dictionary.getInstance().isInDictionary(word)) {
+            if (Dictionary.getInstance().isInForbidden(word)) {
                 return false;
             }
         }
-        for (String invalidName : NOT_NAME) {
-            if (text.contains(invalidName)) {
-                return false;
-            }
-        }
+//        for (String invalidName : NOT_NAME) {
+//            if (text.contains(invalidName)) {
+//                return false;
+//            }
+//        }
         return true;
     }
 }

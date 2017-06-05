@@ -3,13 +3,16 @@ package com.gabriela.textdetection;
 import android.Manifest;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gabriela.textdetection.dictionary.Dictionary;
 import com.gabriela.textdetection.utils.FormatUtils;
 import com.google.android.gms.common.api.CommonStatusCodes;
 
@@ -29,14 +32,14 @@ public class MainActivity extends AppCompatActivity {
     CompoundButton autoFocus;
     @BindView(R.id.use_flash)
     CompoundButton useFlash;
+    @BindView(R.id.edt_name)
+    TextInputEditText mEdtName;
+    @BindView(R.id.edt_cpf)
+    TextInputEditText mEdtCpf;
+    @BindView(R.id.edt_birth_date)
+    TextInputEditText mEdtBirthDate;
     @BindView(R.id.status_message)
     TextView statusMessage;
-    @BindView(R.id.txt_name)
-    TextView mTxtName;
-    @BindView(R.id.txt_cpf)
-    TextView mTxtCpf;
-    @BindView(R.id.txt_birth_date)
-    TextView mTxtBirthDate;
 
     private static final int RC_OCR_CAPTURE = 9003;
     private static final String TAG = "MainActivity";
@@ -77,14 +80,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == RC_OCR_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
-                    String cpf = data.getStringExtra(OcrCaptureActivity.CPF);
-                    Date birthDate = (Date) data.getSerializableExtra(OcrCaptureActivity.BIRTH_DATE);
-                    String name = data.getStringExtra(OcrCaptureActivity.NAME);
-                    statusMessage.setText(R.string.ocr_success);
-                    mTxtName.setText(FormatUtils.capitalizeText(name));
-                    mTxtCpf.setText(FormatUtils.formatCpf(cpf));
-                    mTxtBirthDate.setText(FormatUtils.formatDate(birthDate, this));
-
+                    fillFields(data);
                 } else {
                     statusMessage.setText(R.string.ocr_failure);
                     Log.d(TAG, "No Text captured, intent data is null");
@@ -95,6 +91,22 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void fillFields(Intent data) {
+        String cpf = data.getStringExtra(OcrCaptureActivity.CPF);
+        Date birthDate = (Date) data.getSerializableExtra(OcrCaptureActivity.BIRTH_DATE);
+        String name = data.getStringExtra(OcrCaptureActivity.NAME);
+        statusMessage.setText(R.string.ocr_success);
+        if (!TextUtils.isEmpty(name)) {
+            mEdtName.setText(FormatUtils.capitalizeText(name));
+        }
+        if (!TextUtils.isEmpty(cpf)) {
+            mEdtCpf.setText(FormatUtils.formatCpf(cpf));
+        }
+        if (birthDate != null) {
+            mEdtBirthDate.setText(FormatUtils.formatDate(birthDate, this));
         }
     }
 }

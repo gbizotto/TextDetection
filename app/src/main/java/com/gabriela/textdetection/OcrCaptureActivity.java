@@ -235,7 +235,7 @@ public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCa
     @Override
     public void birthDateFound(Date birthDate, Activity activity) {
         mBirthDate = birthDate;
-        showMessage(getString(R.string.birth_date), activity);
+     //   showMessage(getString(R.string.birth_date), activity);
         if (isAllDataFound()) {
             forwardToNext();
         }
@@ -244,7 +244,7 @@ public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCa
     @Override
     public void nameFound(String name, Activity activity) {
         mName = name;
-        showMessage(getString(R.string.name), activity);
+       // showMessage(getString(R.string.name), activity);
         if (isAllDataFound()) {
             forwardToNext();
         }
@@ -254,7 +254,7 @@ public class OcrCaptureActivity extends AppCompatActivity implements DataFoundCa
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-               // Toast.makeText(activity.getBaseContext(), activity.getBaseContext().getString(R.string.data_found, dataFound), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.getBaseContext(), activity.getBaseContext().getString(R.string.data_found, dataFound), Toast.LENGTH_SHORT).show();
             }
         });
     }

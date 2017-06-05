@@ -1,6 +1,8 @@
 package com.gabriela.textdetection.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.gabriela.textdetection.R;
 
@@ -24,6 +26,7 @@ public final class FormatUtils {
         return new SimpleDateFormat(context.getString(R.string.birth_date_format)).format(date);
     }
 
+    @NonNull
     public static String cleanFormattting(String text){
         return text
                 .replaceAll("\\.", "")
@@ -40,6 +43,7 @@ public final class FormatUtils {
         return cpf;
     }
 
+    @NonNull
     public static String capitalizeText(String text) {
         String[] words = text.split(" ");
         StringBuilder builder = new StringBuilder();

@@ -15,32 +15,41 @@
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/txt_name"
         android:layout_below="@+id/status_message"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/status_message" />
+        android:id="@+id/txt_name">
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edt_name"
+            android:hint="@string/name"/>
+    </android.support.design.widget.TextInputLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/txt_cpf"
         android:layout_below="@+id/txt_name"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/status_message" />
+        android:id="@+id/txt_cpf">
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edt_cpf"
+            android:hint="@string/cpf"/>
+    </android.support.design.widget.TextInputLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/txt_birth_date"
         android:layout_below="@+id/txt_cpf"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/status_message" />
+        android:id="@+id/txt_birth_date">
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edt_birth_date"
+            android:hint="@string/birth_date"/>
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:layout_width="wrap_content"
@@ -55,7 +64,7 @@
         android:layout_height="wrap_content"
         android:text="@string/auto_focus"
         android:id="@+id/auto_focus"
-        android:layout_below="@+id/txt_name"
+        android:layout_below="@+id/txt_birth_date"
         android:layout_alignParentStart="true"
         android:layout_marginTop="66dp"
         android:checked="true" />

@@ -1,14 +1,41 @@
 package com.gabriela.textdetection.dictionary;
 
-/**
- * Created by gabriela on 6/2/17.
- */
+import java.util.Arrays;
+import java.util.List;
 
 public class Dictionary {
 
-    private static final Dictionary instance = new Dictionary();
+    private static final double MAX_SIMILARITY = 0.71;
 
-    private BloomFilter<String> bloomFilter;
+    private static final List<String> FORBIDDEN_WORDS = Arrays.asList(
+            "carteira",
+            "cidade",
+            "data",
+            "departamento",
+            "emissor",
+            "federativa",
+            "filiacao",
+            "habilitação",
+            "habilitacao",
+            "identidade",
+            "ministério",
+            "ministe",
+            "ministerio",
+            "nome",
+            "permissão",
+            "permissao",
+            "pública",
+            "publica",
+            "rativa",
+            "registro",
+            "república",
+            "territorio",
+            "trânsito",
+            "transito",
+            "valida",
+            "validade");
+
+    private static final Dictionary instance = new Dictionary();
 
     private Dictionary() {
     }
@@ -17,38 +44,14 @@ public class Dictionary {
         return instance;
     }
 
-    public boolean isInDictionary(String text) {
-        if (bloomFilter == null) {
-            initFilter();
+    public boolean isInForbidden(final String compare) {
+        JaroWinkler jaroWinkler = new JaroWinkler();
+        for (String word : FORBIDDEN_WORDS) {
+            double similarity = jaroWinkler.similarity(compare, word);
+            if (similarity > MAX_SIMILARITY) {
+                return true;
+            }
         }
-        return bloomFilter.contains(text);
-    }
-
-    private void initFilter() {
-        bloomFilter = new BloomFilter<>(0.1, 100);
-        bloomFilter.add("república");
-        bloomFilter.add("federativa");
-        bloomFilter.add("ministério");
-        bloomFilter.add("cidade");
-        bloomFilter.add("departamento");
-        bloomFilter.add("trânsito");
-        bloomFilter.add("carteira");
-        bloomFilter.add("habilitação");
-        bloomFilter.add("pública");
-        bloomFilter.add("publica");
-        bloomFilter.add("transito");
-        bloomFilter.add("valida");
-        bloomFilter.add("territorio");
-        bloomFilter.add("filiacao");
-        bloomFilter.add("ministerio");
-        bloomFilter.add("identidade");
-        bloomFilter.add("emissor");
-        bloomFilter.add("data");
-        bloomFilter.add("habilitacao");
-        bloomFilter.add("permissão");
-        bloomFilter.add("permissao");
-        bloomFilter.add("registro");
-        bloomFilter.add("nome");
-        bloomFilter.add("validade");
+        return false;
     }
 }
