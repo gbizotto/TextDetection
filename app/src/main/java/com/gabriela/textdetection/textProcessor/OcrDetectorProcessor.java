@@ -87,7 +87,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         }
 
         Date possibleBirthDate = TextIdentifierUtils.getBirthDate(textBlock.getValue(), mContext);
-        if (possibleBirthDate != null && (mBirthDate == null || (mBirthDate != null && mBirthDate.after(possibleBirthDate)))) {
+        if (possibleBirthDate != null && (mBirthDate == null ||  mBirthDate.after(possibleBirthDate))) {
             mBirthDate = possibleBirthDate;
             mCallback.birthDateFound(mBirthDate, mActivity);
             foundData = true;

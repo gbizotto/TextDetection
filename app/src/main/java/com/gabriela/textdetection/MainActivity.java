@@ -12,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gabriela.textdetection.dictionary.Dictionary;
 import com.gabriela.textdetection.utils.FormatUtils;
 import com.google.android.gms.common.api.CommonStatusCodes;
 

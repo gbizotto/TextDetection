@@ -15,7 +15,7 @@ import java.util.Arrays;
  * https://github.com/tdebatty/java-string-similarity/blob/master/src/main/java/info/debatty/java/stringsimilarity/JaroWinkler.java
  */
 
-public class JaroWinkler {
+class JaroWinkler {
 
     private static final double DEFAULT_THRESHOLD = 0.7;
     private static final int THREE = 3;

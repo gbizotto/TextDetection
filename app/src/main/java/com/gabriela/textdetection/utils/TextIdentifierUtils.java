@@ -1,7 +1,6 @@
 package com.gabriela.textdetection.utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.gabriela.textdetection.R;
 import com.gabriela.textdetection.dictionary.Dictionary;
@@ -14,10 +13,6 @@ import java.util.Date;
 import br.com.concretesolutions.canarinho.validator.Validador;
 
 public final class TextIdentifierUtils {
-
-    private static final String[] NOT_NAME = {"válida", "território", "nacional", "nome", "filiação", "naturalidade", "origem",
-            "república", "federativa", "ministério", "cidade", "departamento", "trânsito", "carteira", "habilitação", "pública", "publica", "transito",
-            "valida", "territorio", "filiacao", "ministerio", "identidade", "emissor", "data", "habilitacao", "permissão", "permissao", "registro", "nome", "validade"};
 
     private TextIdentifierUtils() {
     }
@@ -110,10 +105,7 @@ public final class TextIdentifierUtils {
 
     public static boolean mightBeName(String text) {
         text = removePossibleSeparators(text).toLowerCase();
-        if (isLettersOnly(text) && text.contains(" ")) {
-            return isAllowedName(text);
-        }
-        return false;
+        return isLettersOnly(text) && text.contains(" ") && isAllowedName(text);
     }
 
     private static boolean isAllowedName(String text) {
@@ -123,11 +115,6 @@ public final class TextIdentifierUtils {
                 return false;
             }
         }
-//        for (String invalidName : NOT_NAME) {
-//            if (text.contains(invalidName)) {
-//                return false;
-//            }
-//        }
         return true;
     }
 }
