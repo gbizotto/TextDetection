@@ -11,8 +11,9 @@ import java.util.Arrays;
  * Jaro-Winkler was developed in the area of record linkage (duplicate
  * detection) (Winkler, 1990). It returns a value in the interval [0.0, 1.0].
  * The distance is computed as 1 - Jaro-Winkler similarity.
+ *
  * @author Thibault Debatty
- * https://github.com/tdebatty/java-string-similarity/blob/master/src/main/java/info/debatty/java/stringsimilarity/JaroWinkler.java
+ *         https://github.com/tdebatty/java-string-similarity/blob/master/src/main/java/info/debatty/java/stringsimilarity/JaroWinkler.java
  */
 
 class JaroWinkler {

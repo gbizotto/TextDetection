@@ -59,19 +59,15 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
             return false;
         }
 
-        if (TextUtils.isEmpty(mCpf) && TextIdentifierUtils.isCpfValue(textBlock)) {
-            mCpf = textBlock.getValue();
-            mCallback.cpfFound(mCpf, mActivity);
+        boolean foundData = hasFoundCpf(textBlock.getValue());
+        if (foundData) {
             return true;
         }
 
-        if (TextIdentifierUtils.isDate(textBlock.getValue(), mContext)) {
-            setBirthDate(textBlock);
-            mCallback.birthDateFound(mBirthDate, mActivity);
+        foundData = hasFoundBirthDate(textBlock.getValue());
+        if (foundData) {
             return true;
         }
-
-        boolean foundData = false;
 
         setName(textBlock);
         if (!TextUtils.isEmpty(mFirstPossibleName)) {
@@ -79,15 +75,14 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
             foundData = true;
         }
 
-        String possibleCpf = TextIdentifierUtils.getCpf(textBlock.getValue());
+        String possibleCpf = TextIdentifierUtils.INSTANCE.getCpf(textBlock.getValue());
         if (!TextUtils.isEmpty(possibleCpf)) {
-            mCpf = possibleCpf;
-            mCallback.cpfFound(possibleCpf, mActivity);
+            setCpf(possibleCpf);
             foundData = true;
         }
 
-        Date possibleBirthDate = TextIdentifierUtils.getBirthDate(textBlock.getValue(), mContext);
-        if (possibleBirthDate != null && (mBirthDate == null ||  mBirthDate.after(possibleBirthDate))) {
+        Date possibleBirthDate = TextIdentifierUtils.INSTANCE.getBirthDate(textBlock.getValue(), mContext);
+        if (possibleBirthDate != null && (mBirthDate == null || mBirthDate.after(possibleBirthDate))) {
             mBirthDate = possibleBirthDate;
             mCallback.birthDateFound(mBirthDate, mActivity);
             foundData = true;
@@ -96,8 +91,30 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         return foundData;
     }
 
+    private boolean hasFoundCpf(String text) {
+        if (TextUtils.isEmpty(mCpf) && TextIdentifierUtils.INSTANCE.isCpfValue(text)) {
+           setCpf(text);
+            return true;
+        }
+        return false;
+    }
+
+    private void setCpf(String cpf){
+        mCpf = cpf;
+        mCallback.cpfFound(mCpf, mActivity);
+    }
+
+    private boolean hasFoundBirthDate(String text) {
+        if (TextIdentifierUtils.INSTANCE.isDate(text, mContext)) {
+            setBirthDate(text);
+            mCallback.birthDateFound(mBirthDate, mActivity);
+            return true;
+        }
+        return false;
+    }
+
     private void setName(TextBlock textBlock) {
-        if (TextIdentifierUtils.mightBeName(textBlock.getValue())) {
+        if (TextIdentifierUtils.INSTANCE.mightBeName(textBlock.getValue())) {
             if (mTopPointName == null || mTopPointName > textBlock.getBoundingBox().top) {
                 mTopPointName = textBlock.getBoundingBox().top;
                 mFirstPossibleName = textBlock.getValue();
@@ -105,9 +122,9 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         }
     }
 
-    private void setBirthDate(TextBlock textBlock) {
-        if (TextIdentifierUtils.isDate(textBlock.getValue(), mContext)) {
-            Date currentDate = TextIdentifierUtils.formatDate(textBlock.getValue(), mContext);
+    private void setBirthDate(String text) {
+        if (TextIdentifierUtils.INSTANCE.isDate(text, mContext)) {
+            Date currentDate = TextIdentifierUtils.INSTANCE.formatDate(text, mContext);
             if (mBirthDate == null || mBirthDate.after(currentDate)) {
                 mBirthDate = currentDate;
             }
